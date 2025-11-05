@@ -1,0 +1,32 @@
+.registerFormTitle {
+	font-size: 32px;
+	margin-bottom: 24px;
+	padding-inline: 32px;
+	padding-top: 8px;
+}
+
+.registerFormForm {
+	width: 100%;
+	height: fit-content;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+.registerFormInput {
+	outline: none;
+	background-color: var(--color-white-10);
+	width: 75%;
+	padding: 10px 20px;
+	font-size: 20px;
+	color: var(--color-black-10);
+	border-radius: var(--radius-sm);
+	margin-left: calc(25% / 2);
+
+	margin-top: 20px;
+}
+.registerFormSubmit {
+	background-color: var(--color-gray-10);
+	padding: 8px 24px;
+	width: 75%;
+	margin-left: calc(25% / 2);
+}

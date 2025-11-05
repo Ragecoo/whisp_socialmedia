@@ -1,0 +1,52 @@
+.userPage {
+	display: flex;
+	flex-direction: row;
+
+	width: calc(100vw - var(--navbar-width));
+	padding: var(--block-gaps);
+	gap: var(--block-gaps);
+	--userSection-width: 100%;
+	--form-width: 512px;
+	--form-padding: var(--block-paddings);
+	--page-blocks-bg: var(--color-white-10);
+}
+.userSectionForm {
+	width: 100%;
+	height: 100%;
+	background-color: var(--page-blocks-bg);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: var(--radius);
+}
+.formTabsContainer {
+	width: var(--form-width);
+	background-color: var(--color-darkgray-10);
+	padding: var(--form-padding);
+	border-radius: var(--radius-3xl);
+}
+
+.formTabsList {
+	background-color: var(--color-gray-10);
+	font-size: 20px;
+	padding: 28px 8px;
+	gap: 24px;
+
+	& * {
+		font-size: inherit;
+		cursor: pointer;
+		border-radius: var(--radius-sm);
+	}
+	& > * {
+		padding-inline: 16px;
+	}
+}
+
+.formTabsBody {
+	color: var(--color-white-10);
+}
+
+/*  */
+
+.userSectionProfile {
+}

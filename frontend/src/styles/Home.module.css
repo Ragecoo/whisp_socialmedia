@@ -1,0 +1,57 @@
+.homePage {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: calc(100vw - var(--navbar-width));
+	padding: var(--block-gaps);
+	gap: var(--block-gaps);
+	--searchSection-width: calc(512px + 32px);
+	--page-blocks-bg: var(--color-white-10);
+}
+.feedSection {
+	width: 100%;
+	background-color: var(--page-blocks-bg);
+	border-radius: var(--radius);
+	overflow: auto;
+	scrollbar-width: none;
+	padding: var(--block-paddings);
+}
+.searchSection {
+	width: var(--searchSection-width);
+	display: flex;
+	flex-direction: column;
+	gap: var(--block-gaps);
+}
+.searchBar {
+	width: var(--searchSection-width);
+	background-color: var(--page-blocks-bg);
+	border-radius: var(--radius);
+	padding: var(--block-paddings);
+	position: relative;
+}
+.searchBarInput {
+	background-color: var(--color-white-10);
+	outline: none;
+	border: none;
+	border-radius: var(--radius-ti);
+	padding: calc(0.625rem / 10 * 10) calc(0.625rem / 10 * 20);
+	padding-left: calc(var(--block-paddings) * 3.5);
+	width: 100%;
+	transition: background-color 0.2s ease-in-out;
+}
+.searchBarSubmit {
+	background-color: transparent;
+	position: absolute;
+	top: 50%;
+	left: calc(var(--block-paddings) * 2);
+	transform: translateY(-50%);
+	cursor: pointer;
+}
+
+.searchResults {
+	width: var(--searchSection-width);
+	background-color: var(--page-blocks-bg);
+	border-radius: var(--radius);
+	height: 100%;
+	padding: var(--block-paddings);
+}
