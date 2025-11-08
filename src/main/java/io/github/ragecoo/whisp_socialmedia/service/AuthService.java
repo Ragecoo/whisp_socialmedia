@@ -4,6 +4,7 @@ import io.github.ragecoo.whisp_socialmedia.dto.authdto.JwtAuthDto;
 import io.github.ragecoo.whisp_socialmedia.dto.authdto.LoginRequest;
 import io.github.ragecoo.whisp_socialmedia.dto.authdto.RefreshTokenDto;
 import io.github.ragecoo.whisp_socialmedia.dto.authdto.RegisterRequest;
+import io.github.ragecoo.whisp_socialmedia.entity.User;
 
 public interface AuthService {
 
@@ -11,5 +12,6 @@ public interface AuthService {
     JwtAuthDto login(LoginRequest request);
     JwtAuthDto refresh(RefreshTokenDto request);
     JwtAuthDto changePassword(String oldPassword, String newPassword);
+    User getUserByToken(String token);
 
 }

@@ -11,12 +11,12 @@ import {
 	type HTMLMotionProps,
 } from 'motion/react'
 
-import { cn } from '@/components/lib/utils'
-import { useIsInView } from '@/components/hooks/use-is-in-view'
+import { cn } from '@components/lib/utils'
+import { useIsInView } from '@components/hooks/use-is-in-view'
 import {
 	Slot,
 	type WithAsChild,
-} from '@/components/animate-ui/primitives/animate/slot'
+} from '@components/animate-ui/primitives/animate/slot'
 
 const staticAnimations = {
 	path: {

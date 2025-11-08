@@ -143,3 +143,9 @@
 	--block-gaps: 16px;
 	--block-paddings: 16px;
 }
+
+.center {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}

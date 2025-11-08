@@ -4,9 +4,10 @@ import React from 'react'
 import styles from '@styles/LoginForm.module.css'
 import { RippleButton, RippleButtonRipples } from './RippleButton'
 import { Cursor, CursorFollow, CursorProvider } from './Cursor'
+import { apiLogin } from '@/api/auth'
 
 interface FormValues {
-	email: string
+	usernameOrEmail: string
 	password: string
 }
 
@@ -15,49 +16,40 @@ export default function LoginForm() {
 		<>
 			<div className={styles.loginFormTitle}>Войти в аккаунт</div>
 			<Formik<FormValues>
-				initialValues={{ email: '', password: '' }}
+				initialValues={{ usernameOrEmail: '', password: '' }}
 				validate={values => {
 					const errors: Partial<FormValues> = {}
-					if (!values.email) {
-						errors.email = 'Required'
-					} else if (
-						!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-					) {
-						errors.email = 'Invalid email address'
+					if (!values.usernameOrEmail) {
+						errors.usernameOrEmail = 'Поле не заполнено'
+					} else {
+						const isEmail = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(
+							values.usernameOrEmail
+						)
+						const isUsername = /^[a-zA-Z0-9._-]{6,}$/i.test(
+							values.usernameOrEmail
+						)
+						if (!isEmail && !isUsername) {
+							errors.usernameOrEmail =
+								'Введите корректный email или имя пользователя'
+						}
 					}
 					if (!values.password) {
-						errors.password = 'Required'
+						errors.password = 'Поле не заполнено'
 					}
 					return errors
 				}}
 				onSubmit={async (values, { setSubmitting }) => {
 					try {
-						const res = await fetch('http://localhost:1010/api/auth/login', {
-							method: 'POST',
-							headers: { 'Content-Type': 'application/json' },
-							body: JSON.stringify({
-								usernameOrEmail: values.email,
-								password: values.password,
-							}),
-							credentials: 'include',
+						const user = await apiLogin({
+							usernameOrEmail: values.usernameOrEmail,
+							password: values.password,
 						})
-
-						if (!res.ok) {
-							const error = await res.json().catch(() => ({}))
-							console.error('Ошибка входа:', error)
-							alert(error.error || 'Ошибка авторизации')
-							return
-						}
-
-						const data = await res.json()
-						console.log('✅ Успешный вход:', data)
-
-						alert('Вы успешно вошли!')
-
-						window.location.href = '/user'
+						console.log('Успешный вход:', user)
+						setTimeout(() => {
+							window.location.reload()
+						}, 500)
 					} catch (err) {
 						console.error('Ошибка при запросе:', err)
-						alert('Не удалось подключиться к серверу')
 					} finally {
 						setSubmitting(false)
 					}
@@ -72,34 +64,31 @@ export default function LoginForm() {
 					handleSubmit,
 					isSubmitting,
 				}) => (
-					<form onSubmit={handleSubmit} className='loginFormForm'>
+					<form
+						onSubmit={handleSubmit}
+						className='loginFormForm'
+						autoComplete='off'
+						spellCheck='false'
+						autoCorrect='off'
+						autoCapitalize='off'
+					>
 						<div>
 							<input
-								type='email'
-								name='email'
+								type='usernameOrEmail'
+								name='usernameOrEmail'
 								onChange={handleChange}
 								onBlur={handleBlur}
-								value={values.email}
-								className={`${styles.loginFormInput} ${styles.loginFormEmail}`}
-								placeholder='Email'
+								value={values.usernameOrEmail}
+								className={`${styles.loginFormInput} ${styles.loginFormusernameOrEmail}`}
+								placeholder='Имя пользователя или e-mail'
 							/>
-							<CursorProvider>
-								<CursorFollow
-									style={{
-										borderRadius: 'var(--radius-sm)',
-										backgroundColor: 'var(--color-gray-10)',
-										color: 'var(--color-light-10)',
-									}}
-								>
-									example@mail.com
-								</CursorFollow>
-							</CursorProvider>
 						</div>
-
-						{errors.email && touched.email && (
-							<div className='loginFormError'>{errors.email}</div>
+						{errors.usernameOrEmail && touched.usernameOrEmail && (
+							<div className={styles.loginFormError}>
+								{errors.usernameOrEmail}
+							</div>
 						)}
-
+						<br />
 						<div>
 							<input
 								type='password'
@@ -110,23 +99,11 @@ export default function LoginForm() {
 								className={`${styles.loginFormInput} ${styles.loginFormPassword}`}
 								placeholder='Пароль'
 							/>
-							<CursorProvider>
-								<CursorFollow
-									style={{
-										borderRadius: 'var(--radius-sm)',
-										backgroundColor: 'var(--color-gray-10)',
-										color: 'var(--color-light-10)',
-									}}
-								>
-									Минимум 6 символов
-								</CursorFollow>
-							</CursorProvider>
 						</div>
-
 						{errors.password && touched.password && (
-							<div className='loginFormError'>{errors.password}</div>
+							<div className={styles.loginFormError}>{errors.password}</div>
 						)}
-
+						<br />
 						<RippleButton
 							type='submit'
 							disabled={isSubmitting}

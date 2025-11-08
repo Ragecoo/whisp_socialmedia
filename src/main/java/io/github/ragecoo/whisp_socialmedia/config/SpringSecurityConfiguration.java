@@ -30,60 +30,49 @@ import java.util.List;
 public class SpringSecurityConfiguration {
 
     private final JwtFilter jwtFilter;
-
-    /** Подключаем кастомный UserDetailsService */
     @Bean
     public UserDetailsService userDetailsService(CustomUserDetailsService impl) {
         return impl;
     }
-
-    /** Конфигурация CORS (разрешаем все для dev) */
     @Primary
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(List.of("*"));
+        cfg.setAllowedOrigins(List.of("http://localhost:3000"));
         cfg.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        cfg.setAllowedHeaders(List.of("Authorization", "Content-Type"));
-        cfg.setAllowCredentials(false);
+        cfg.setAllowedHeaders(List.of("*"));
+        cfg.setExposedHeaders(List.of("Set-Cookie", "Authorization"));
+        cfg.setAllowCredentials(true);
         cfg.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
         return source;
     }
-
-    /** Конфигурация цепочки безопасности */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors().and()
-                .csrf().disable() // JWT → CSRF не нужен
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(auth -> auth
-                        // открытые эндпоинты
                         .requestMatchers(
                                 "/api/auth/login",
                                 "/api/auth/register",
-                                "/api/auth/refresh"
+                                "/api/auth/refresh",
+                                "/api/check"
                         ).permitAll()
-                        // остальные требуют авторизации
                         .anyRequest().authenticated()
                 )
-                // добавляем JWT фильтр перед UsernamePasswordAuthenticationFilter
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
-    /** AuthenticationManager для аутентификации */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration cfg) throws Exception {
         return cfg.getAuthenticationManager();
     }
-
-    /** BCryptPasswordEncoder для шифрования паролей */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

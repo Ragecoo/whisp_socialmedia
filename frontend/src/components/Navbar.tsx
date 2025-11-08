@@ -21,15 +21,26 @@ import {
 import ButtonAlertDialog from './ButtonAlertDialog'
 import { usePathname } from 'next/navigation'
 import { Highlight, HighlightItem } from './Highlight'
+import { AnimateIcon } from './animate-ui/icons/icon'
+import { LogOut } from './animate-ui/icons/log-out'
+import { apiLogout } from '@/api/auth'
 
 function Navbar() {
 	const path = usePathname()
 	console.log(path)
+	const handleLogout = async () => {
+		try {
+			const res = await apiLogout()
+		} catch (err) {}
+		window.location.reload()
+	}
 	return (
 		<div className={styles.navbar}>
-			<div className={styles.navbarLogo}>
-				<img src='https://placehold.co/96x96' />
-			</div>
+			<Link href='/'>
+				<div className={styles.navbarLogo}>
+					<img src='https://placehold.co/96x96' />
+				</div>
+			</Link>
 			<div className={styles.navbarNavigation}>
 				<TooltipProvider
 					transition={{
@@ -120,8 +131,11 @@ function Navbar() {
 					description={'Вы сможете войти снова в любое время.'}
 					notext={'Отмена'}
 					yestext={'Выйти'}
+					onyes={handleLogout}
 				>
-					<LogOutIcon />
+					<AnimateIcon animateOnHover>
+						<LogOut />
+					</AnimateIcon>
 				</ButtonAlertDialog>
 			</div>
 		</div>

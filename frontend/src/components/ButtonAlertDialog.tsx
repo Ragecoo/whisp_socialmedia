@@ -1,6 +1,6 @@
 'use client'
 
-import { ReactNode } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
 import {
 	AlertDialog,
 	AlertDialogTrigger,
@@ -20,6 +20,8 @@ interface ButtonAlertDialogProps {
 	description?: string
 	notext: string
 	yestext: string
+	onno?: MouseEventHandler<HTMLButtonElement>
+	onyes?: MouseEventHandler<HTMLButtonElement>
 }
 
 function ButtonAlertDialog({
@@ -28,6 +30,8 @@ function ButtonAlertDialog({
 	description,
 	notext,
 	yestext,
+	onno,
+	onyes,
 }: ButtonAlertDialogProps) {
 	return (
 		<AlertDialog>
@@ -51,8 +55,8 @@ function ButtonAlertDialog({
 					) : null}
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel>{notext}</AlertDialogCancel>
-					<AlertDialogAction>{yestext}</AlertDialogAction>
+					<AlertDialogCancel onClick={onno}>{notext}</AlertDialogCancel>
+					<AlertDialogAction onClick={onyes}>{yestext}</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>

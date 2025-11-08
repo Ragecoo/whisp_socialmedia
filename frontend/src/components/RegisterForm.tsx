@@ -1,6 +1,6 @@
 'use client'
 import { Formik } from 'formik'
-import React from 'react'
+import React, { useState } from 'react'
 import styles from '@styles/RegisterForm.module.css'
 import { RippleButton, RippleButtonRipples } from './RippleButton'
 import { CursorFollow, CursorProvider } from './Cursor'
@@ -13,6 +13,13 @@ interface FormValues {
 }
 
 export default function RegisterForm() {
+	const [isLoading, setIsLoading] = useState(false)
+
+	function handleSubmitClick(e: React.MouseEvent<HTMLButtonElement>) {
+		setIsLoading(true)
+		console.log(isLoading)
+	}
+
 	return (
 		<>
 			<div className={styles.registerFormTitle}>Создать аккаунт</div>
@@ -25,15 +32,32 @@ export default function RegisterForm() {
 				}}
 				validate={values => {
 					const errors: Partial<FormValues> = {}
-					if (!values.username) errors.username = 'Введите имя пользователя'
-					if (!values.email) errors.email = 'Введите email'
-					else if (
+					if (!values.username) {
+						errors.username = 'Введите имя пользователя'
+					} else if (values.username.length < 6) {
+						errors.username = 'Имя пользователя должно быть длиннее 6 символов'
+					} else if (!/^[A-Za-z0-9]+$/.test(values.username)) {
+						errors.username =
+							'Имя пользователя может содержать только латинские буквы и цифры'
+					}
+					if (!values.email) {
+						errors.email = 'Введите email'
+					} else if (
 						!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-					)
+					) {
 						errors.email = 'Некорректный email'
-					if (!values.password) errors.password = 'Введите пароль'
-					if (values.password !== values.confirmPassword)
+					}
+					if (!values.password) {
+						errors.password = 'Введите пароль'
+					} else if (values.password.length < 6) {
+						errors.password = 'Пароль должен быть длиннее 6 символов'
+					} else if (!/^[A-Za-z0-9]+$/.test(values.password)) {
+						errors.password =
+							'Пароль может содержать только латинские буквы и цифры'
+					}
+					if (values.password !== values.confirmPassword) {
 						errors.confirmPassword = 'Пароли не совпадают'
+					}
 					return errors
 				}}
 				onSubmit={async (values, { setSubmitting }) => {
@@ -61,11 +85,12 @@ export default function RegisterForm() {
 						}
 
 						const data = await res.json()
-						console.log('✅ Успешная регистрация:', data)
-						alert('Вы успешно зарегистрированы!')
+						console.log('Успешная регистрация:', data)
+						setTimeout(() => {
+							window.location.reload()
+						}, 500)
 					} catch (err) {
 						console.error('Ошибка при запросе:', err)
-						alert('Не удалось подключиться к серверу')
 					} finally {
 						setSubmitting(false)
 					}
@@ -81,7 +106,6 @@ export default function RegisterForm() {
 					isSubmitting,
 				}) => (
 					<form onSubmit={handleSubmit} className={styles.registerFormForm}>
-						{/* Username */}
 						<div>
 							<input
 								type='text'
@@ -103,14 +127,11 @@ export default function RegisterForm() {
 									Минимум 6 символов
 								</CursorFollow>
 							</CursorProvider>
-							{errors.username && touched.username && (
-								<div className={styles.registerFormError}>
-									{errors.username}
-								</div>
-							)}
 						</div>
-
-						{/* Email */}
+						{errors.username && touched.username && (
+							<div className={styles.registerFormError}>{errors.username}</div>
+						)}
+						<br />
 						<div>
 							<input
 								type='email'
@@ -135,9 +156,8 @@ export default function RegisterForm() {
 							{errors.email && touched.email && (
 								<div className={styles.registerFormError}>{errors.email}</div>
 							)}
+							<br />
 						</div>
-
-						{/* Password */}
 						<div>
 							<input
 								type='password'
@@ -164,9 +184,8 @@ export default function RegisterForm() {
 									{errors.password}
 								</div>
 							)}
+							<br />
 						</div>
-
-						{/* Confirm Password */}
 						<div>
 							<input
 								type='password'
@@ -183,12 +202,15 @@ export default function RegisterForm() {
 								</div>
 							)}
 						</div>
-
+						<br />
 						<RippleButton
 							type='submit'
 							disabled={isSubmitting}
-							className={styles.registerFormSubmit}
+							className={`${styles.registerFormSubmit} ${
+								isLoading ? styles.active : ''
+							}`}
 							hoverScale={1.01}
+							onClick={handleSubmitClick}
 						>
 							Зарегистрироваться
 							<RippleButtonRipples

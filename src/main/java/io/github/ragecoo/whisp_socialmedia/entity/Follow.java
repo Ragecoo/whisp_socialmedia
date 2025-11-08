@@ -1,39 +1,25 @@
 package io.github.ragecoo.whisp_socialmedia.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
-
+import lombok.Data;
 import java.time.Instant;
 
-@Getter
-@Setter
 @Entity
 @Table(name = "follows")
+@Data
 public class Follow {
-    @EmbeddedId
-    private FollowId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @MapsId("userId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private io.github.ragecoo.whisp_socialmedia.entity.User user;
+    private User follower;
 
-    @MapsId("targetId")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_id", nullable = false)
-    private io.github.ragecoo.whisp_socialmedia.entity.User target;
-
-    @NotNull
-    @Column(name = "id", nullable = false)
-    private Long id1;
+    private User following;
 
     @Column(name = "created_at")
-    private Instant createdAt;
-
+    private Instant createdAt = Instant.now();
 }

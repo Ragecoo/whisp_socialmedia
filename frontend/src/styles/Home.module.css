@@ -11,6 +11,7 @@
 .feedSection {
 	width: 100%;
 	background-color: var(--page-blocks-bg);
+	border: 1px solid var(--color-darkgray-10);
 	border-radius: var(--radius);
 	overflow: auto;
 	scrollbar-width: none;
@@ -27,6 +28,8 @@
 	background-color: var(--page-blocks-bg);
 	border-radius: var(--radius);
 	padding: var(--block-paddings);
+	border: 1px solid var(--color-darkgray-10);
+
 	position: relative;
 }
 .searchBarInput {
@@ -54,4 +57,5 @@
 	border-radius: var(--radius);
 	height: 100%;
 	padding: var(--block-paddings);
+	border: 1px solid var(--color-darkgray-10);
 }

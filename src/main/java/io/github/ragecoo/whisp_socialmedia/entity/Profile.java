@@ -24,7 +24,7 @@ public class Profile {
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "user_id", nullable = false)
-    private io.github.ragecoo.whisp_socialmedia.entity.User users;
+    private User users;
 
     @ColumnDefault("true")
     @Column(name = "is_public")

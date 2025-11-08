@@ -196,11 +196,9 @@ public class JwtService {
         return Jwts.builder()
                 .subject(user.getUsername())
                 .claim("uid", user.getId())
-                .claim("roles", user.getRole())
+                .claim("role", user.getRole().name()) // Исправьте на "role" и .name()
                 .expiration(date)
                 .signWith(getSignInKey())
                 .compact();
-
     }
-
 }

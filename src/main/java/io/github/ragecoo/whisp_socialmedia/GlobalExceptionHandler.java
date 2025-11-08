@@ -1,10 +1,22 @@
 package io.github.ragecoo.whisp_socialmedia;
 
 import io.github.ragecoo.whisp_socialmedia.exceptions.TakenException;
+import io.github.ragecoo.whisp_socialmedia.exceptions.NotFoundException;
+import io.github.ragecoo.whisp_socialmedia.exceptions.UnauthorizedException;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+
+import java.net.MalformedURLException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -17,7 +29,23 @@ public class GlobalExceptionHandler {
         e.printStackTrace();
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
-                .body(errorResponse("User already exists", HttpStatus.CONFLICT));
+                .body(errorResponse(e.getMessage(), HttpStatus.CONFLICT));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFound(NotFoundException e) {
+        e.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(errorResponse(e.getMessage(), HttpStatus.NOT_FOUND));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<?> handleBadCredentials(BadCredentialsException e) {
+        e.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(errorResponse(e.getMessage(), HttpStatus.UNAUTHORIZED));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -36,11 +64,40 @@ public class GlobalExceptionHandler {
                 .body(errorResponse("Unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ResponseEntity<?> handleUnauthorized(UnauthorizedException e) {
+        e.printStackTrace();
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(errorResponse(e.getMessage(), HttpStatus.FORBIDDEN));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Resource> handleNoResourceFound(NoResourceFoundException ex) {
+        try {
+            // путь к дефолтной картинке
+            Path fallbackPath = Paths.get("uploads/standart_avatar.png");
+            Resource resource = new UrlResource(fallbackPath.toUri());
+
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, "image/png")
+                        .body(resource);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+        } catch (MalformedURLException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
     private Map<String, Object> errorResponse(String message, HttpStatus status) {
         return Map.of(
                 "timestamp", LocalDateTime.now(),
                 "status", status.value(),
-                "error", message
+                "error", status.getReasonPhrase(),
+                "message", message
         );
     }
 }

@@ -5,7 +5,7 @@ import io.github.ragecoo.whisp_socialmedia.entity.*;
 import io.github.ragecoo.whisp_socialmedia.exceptions.*;
 import io.github.ragecoo.whisp_socialmedia.repository.*;
 import io.github.ragecoo.whisp_socialmedia.security.jwt.JwtService;
-import io.github.ragecoo.whisp_socialmedia.service.AuthService;
+import io.jsonwebtoken.JwtException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,19 +17,18 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthServiceImpl implements io.github.ragecoo.whisp_socialmedia.service.AuthService {
 
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
 
-    private static final int REFRESH_TOKEN_DAYS = 30;
+    private static final int REFRESH_TOKEN_DAYS = 7;
 
     private Instant expirationInstant() {
         return LocalDateTime.now()
@@ -50,23 +49,19 @@ public class AuthServiceImpl implements AuthService {
         if (!request.getPassword().equals(request.getConfirmPassword())) {
             throw new IllegalArgumentException("Passwords mismatch");
         }
-
         User u = new User();
         u.setEmail(request.getEmail().trim());
         u.setUsername(request.getUsername().trim());
         u.setPasswordHash(passwordEncoder.encode(request.getPassword()));
         u.setRole(Role.USER);
         u = userRepository.save(u);
-
         JwtAuthDto jwt = jwtService.generateAuthToken(u.getUsername());
-
         refreshTokenRepository.deleteAllByUserId(u.getId());
         RefreshToken rt = new RefreshToken();
         rt.setUser(u);
         rt.setToken(jwt.getRefreshToken());
         rt.setExpiresAt(expirationInstant());
         refreshTokenRepository.save(rt);
-
         return jwt;
     }
 
@@ -74,16 +69,10 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public JwtAuthDto login(LoginRequest request) {
         String id = request.getUsernameOrEmail().trim();
-        String rawPassword = request.getPassword();
-
-        Optional<User> byEmail = userRepository.findByEmailIgnoreCase(id);
-        User u = byEmail.orElseGet(() ->
-                userRepository.findByUsername(id)
-                        .orElseThrow(() -> new BadCredentialsException("Invalid credentials"))
-        );
-
+        User u = userRepository.findByEmailIgnoreCase(id)
+                .orElseGet(() -> userRepository.findByUsername(id)
+                        .orElseThrow(() -> new BadCredentialsException("Invalid credentials")));
         JwtAuthDto jwt = jwtService.generateAuthToken(u.getUsername());
-
         refreshTokenRepository.deleteAllByUserId(u.getId());
         RefreshToken rt = new RefreshToken();
         rt.setUser(u);
@@ -98,31 +87,31 @@ public class AuthServiceImpl implements AuthService {
     @Transactional
     public JwtAuthDto refresh(RefreshTokenDto request) {
         String refresh = request.getRefreshToken();
-        if (!jwtService.validateJwtToken(refresh)) {
-            throw new BadCredentialsException("Invalid refresh token");
+
+        System.out.println(refresh);
+        System.out.println(refreshTokenRepository.findByToken(refresh));
+
+        if (refresh == null || refresh.isBlank()) {
+            throw new BadCredentialsException("Refresh token is missing");
         }
-
-        Long userId = jwtService.getUserIdFromToken(refresh);
-
         RefreshToken stored = refreshTokenRepository.findByToken(refresh)
                 .orElseThrow(() -> new BadCredentialsException("Refresh token not found"));
         if (stored.getExpiresAt().isBefore(Instant.now())) {
             refreshTokenRepository.deleteById(stored.getId());
             throw new BadCredentialsException("Refresh token expired");
         }
-
-        User u = userRepository.findById(userId)
+        if (!jwtService.validateJwtToken(refresh)) {
+            throw new BadCredentialsException("Invalid refresh token");
+        }
+        User u = userRepository.findById(jwtService.getUserIdFromToken(refresh))
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
         JwtAuthDto jwt = jwtService.generateAuthToken(u.getUsername());
-
         refreshTokenRepository.deleteAllByUserId(u.getId());
         RefreshToken rt = new RefreshToken();
         rt.setUser(u);
         rt.setToken(jwt.getRefreshToken());
         rt.setExpiresAt(expirationInstant());
         refreshTokenRepository.save(rt);
-
         return jwt;
     }
 
@@ -132,27 +121,28 @@ public class AuthServiceImpl implements AuthService {
         String username = principal instanceof UserDetails
                 ? ((UserDetails) principal).getUsername()
                 : principal.toString();
-
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User not found"));
-
         if (!passwordEncoder.matches(oldPassword, user.getPasswordHash())) {
             throw new BadCredentialsException("Old password is incorrect");
         }
-
         user.setPasswordHash(passwordEncoder.encode(newPassword));
         user.setUpdatedAt(Instant.now());
         userRepository.save(user);
-
         refreshTokenRepository.deleteAllByUserId(user.getId());
         JwtAuthDto jwt = jwtService.generateAuthToken(user.getUsername());
-
         RefreshToken rt = new RefreshToken();
         rt.setUser(user);
         rt.setToken(jwt.getRefreshToken());
         rt.setExpiresAt(expirationInstant());
         refreshTokenRepository.save(rt);
-
         return jwt;
+    }
+
+    @Override
+    public User getUserByToken(String token) {
+        Long userId = jwtService.getUserIdFromToken(token);
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("User not found"));
     }
 }

@@ -64,4 +64,15 @@
 	--color-black-08: rgba(0, 0, 0, 0.8);
 	--color-black-09: rgba(0, 0, 0, 0.9);
 	--color-black-10: rgba(0, 0, 0, 1);
+
+	--color-error-01: rgba(254, 40, 87, 0.1);
+	--color-error-02: rgba(254, 40, 87, 0.2);
+	--color-error-03: rgba(254, 40, 87, 0.3);
+	--color-error-04: rgba(254, 40, 87, 0.4);
+	--color-error-05: rgba(254, 40, 87, 0.5);
+	--color-error-06: rgba(254, 40, 87, 0.6);
+	--color-error-07: rgba(254, 40, 87, 0.7);
+	--color-error-08: rgba(254, 40, 87, 0.8);
+	--color-error-09: rgba(254, 40, 87, 0.9);
+	--color-error-10: rgba(254, 40, 87, 1);
 }

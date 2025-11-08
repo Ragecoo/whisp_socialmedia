@@ -17,20 +17,32 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
+	border: 1px solid var(--color-darkgray-10);
+	border-radius: var(--radius);
+}
+.userSectionLoading {
+	width: 100%;
+	height: 100%;
+	background-color: var(--page-blocks-bg);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	border-radius: var(--radius);
 }
 .formTabsContainer {
 	width: var(--form-width);
-	background-color: var(--color-darkgray-10);
+	background-color: var(--color-light-10);
 	padding: var(--form-padding);
 	border-radius: var(--radius-3xl);
+	border: 1px solid var(--color-darkgray-10);
 }
 
 .formTabsList {
-	background-color: var(--color-gray-10);
+	background-color: var(--color-white-10);
 	font-size: 20px;
 	padding: 28px 8px;
 	gap: 24px;
+	border: 1px solid var(--color-darkgray-10);
 
 	& * {
 		font-size: inherit;
@@ -40,13 +52,106 @@
 	& > * {
 		padding-inline: 16px;
 	}
+	& > div > div {
+		background-color: var(--color-black-10);
+	}
+	& button[data-active='true'] {
+		color: var(--color-light-10);
+	}
 }
 
 .formTabsBody {
-	color: var(--color-white-10);
+	color: var(--color-black-10);
 }
 
-/*  */
-
 .userSectionProfile {
+	width: 100%;
+	height: 100%;
+	background-color: var(--page-blocks-bg);
+	border-radius: var(--radius);
+	padding: var(--block-paddings);
+}
+
+/* profile */
+.profile {
+	display: grid;
+	grid-template-columns: auto 1fr;
+	grid-template-rows: auto 1fr;
+	gap: var(--block-gaps);
+	width: 100%;
+	height: 100%;
+}
+.profilePfpBlock {
+	display: flex;
+	background-color: var(--color-light-10);
+	border-radius: var(--radius);
+	padding: calc(3 * var(--block-paddings));
+	border: 1px solid var(--color-darkgray-10);
+}
+.profileInfoBlock {
+	display: flex;
+	background-color: var(--color-light-10);
+	border-radius: var(--radius);
+	flex-direction: column;
+	padding: calc(3 * var(--block-paddings));
+	justify-content: space-between;
+	border: 1px solid var(--color-darkgray-10);
+
+	& .profileInfoTopBlock {
+		height: auto;
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+
+		& .profileInfoUser {
+			display: flex;
+			flex-direction: column;
+			& .profileInfoNickname {
+				font-size: 2rem;
+			}
+			& .profileInfoGender {
+				font-size: 1rem;
+				margin-bottom: 1rem;
+			}
+			& .profileInfoUsername {
+				font-size: 1rem;
+				margin-bottom: 1rem;
+				color: var(--color-gray-05);
+			}
+		}
+		& .profileInfoFollow {
+			display: flex;
+			color: var(--color-lightgray-10);
+			height: fit-content;
+			width: fit-content;
+			& div {
+				display: flex;
+				padding: 0.5rem 1.4rem;
+				color: var(--color-white-10);
+				background-color: var(--color-darkgray-10);
+				margin-right: 1rem;
+				border-radius: var(--radius);
+			}
+		}
+	}
+	& .profileInfoBottomBlock {
+		height: 100%;
+		padding-top: calc(3 * var(--block-paddings));
+		& .profileInfoBio {
+			display: block;
+			background-color: var(--color-white-10);
+			border: 1px solid var(--color-darkgray-10);
+			border-radius: var(--radius-sm);
+			min-height: 100%;
+			padding: var(--block-paddings);
+		}
+	}
+}
+.profileMainBlock {
+	grid-column: span 2 / span 2;
+	border: 1px solid var(--color-darkgray-10);
+	display: flex;
+	background-color: var(--color-light-10);
+	border-radius: var(--radius);
+	padding: var(--block-paddings);
 }
