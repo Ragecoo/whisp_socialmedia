@@ -16,8 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import io.github.ragecoo.whisp_socialmedia.dto.userdto.UserRef;
+
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +65,7 @@ public class ProfileServiceImpl implements ProfileService {
                     return profileRepository.save(newProfile);
                 });
 
-        // Обновляем профиль - важно обрабатывать все случаи
+        // обновить профиль важно обрабатывать все случаи
         if (request.getNickname() != null) {
             currentUser.setNickname(request.getNickname());
             userRepository.save(currentUser);
@@ -71,8 +75,7 @@ public class ProfileServiceImpl implements ProfileService {
             profile.setIsPublic(request.getIsPublic());
         }
 
-        // ИСПРАВЛЕНИЕ: Обрабатываем avatarUrl правильно
-        // Если приходит значение (даже пустая строка), обновляем его
+        // обработать avatarUrl правильно если приходит значение даже пустая строка обновляем его
         if (request.getAvatarUrl() != null) {
             profile.setAvatarUrl(request.getAvatarUrl().trim().isEmpty() ? null : request.getAvatarUrl());
         }
@@ -95,7 +98,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         profile.setUpdatedAt(Instant.now());
 
-        // Сохраняем и возвращаем результат
+        // сохранить и вернуть результат
         Profile savedProfile = profileRepository.save(profile);
         System.out.println("Saved profile - Avatar URL: " + savedProfile.getAvatarUrl()); // Для отладки
 
@@ -160,6 +163,42 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public boolean isFollowing(Long followerId, Long followingId) {
         return followRepository.findByFollowerIdAndFollowingId(followerId, followingId).isPresent();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserRef> getFollowers(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User not found");
+        }
+        
+        List<Follow> follows = followRepository.findByFollowingId(userId);
+        return follows.stream()
+                .map(follow -> {
+                    User follower = follow.getFollower();
+                    Profile profile = profileRepository.findByUsers_Id(follower.getId()).orElse(null);
+                    String avatarUrl = profile != null ? profile.getAvatarUrl() : null;
+                    return new UserRef(follower.getId(), follower.getUsername(), avatarUrl);
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserRef> getFollowing(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User not found");
+        }
+        
+        List<Follow> follows = followRepository.findByFollowerId(userId);
+        return follows.stream()
+                .map(follow -> {
+                    User following = follow.getFollowing();
+                    Profile profile = profileRepository.findByUsers_Id(following.getId()).orElse(null);
+                    String avatarUrl = profile != null ? profile.getAvatarUrl() : null;
+                    return new UserRef(following.getId(), following.getUsername(), avatarUrl);
+                })
+                .collect(Collectors.toList());
     }
 
     private Profile createDefaultProfile(User user) {

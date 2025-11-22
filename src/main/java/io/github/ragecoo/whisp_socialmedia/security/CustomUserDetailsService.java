@@ -10,17 +10,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-/** Класс сервис реализующий кастомный UserDetailsService */
+// класс сервис реализующий кастомный userdetailsservice
 @Service
 public class CustomUserDetailsService  implements UserDetailsService {
 
     @Autowired
     private UserRepository userRepository;
 
-    /** Метод отвечающий за загрузку пользователя из базы данных во время аутентификации и построения пользователя по CustomUserDetails
-     * @param username Принимает имя пользователя
-     * @return Возвращает преобразованй объект CustomUserDetails
-     * @see UserRepository#findByUsername(String) */
+    // загрузить пользователя из базы данных во время аутентификации и построить пользователя по customuserdetails
     @Override
     public CustomUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

@@ -15,7 +15,31 @@
 	border-radius: var(--radius);
 	overflow: auto;
 	scrollbar-width: none;
+	display: flex;
+	justify-content: center;
 	padding: var(--block-paddings);
+	position: relative;
+}
+.feedList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--block-gaps);
+	width: 50%;
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);
+}
+.feedBackground {
+	position: sticky;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	/* filter:opacity(0.3); */
 }
 .searchSection {
 	width: var(--searchSection-width);
@@ -51,11 +75,367 @@
 	cursor: pointer;
 }
 
-.searchResults {
+.searchResultsAndFriendsPosts {
 	width: var(--searchSection-width);
 	background-color: var(--page-blocks-bg);
 	border-radius: var(--radius);
 	height: 100%;
 	padding: var(--block-paddings);
 	border: 1px solid var(--color-darkgray-10);
+}
+
+.postsList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: var(--block-gaps);
+}
+
+.postItem {
+	margin: 0;
+	padding: 0;
+}
+
+.postCard {
+	width: var(--inlist-post-width);
+	padding: 15px;
+	border: 1px solid var(--color-lightgray-10);
+	border-radius: var(--radius-sm);
+	background-color: var(--color-white-10);
+}
+
+.postHeader {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	margin-bottom: 10px;
+}
+
+.postAuthorAvatar {
+	width: 48px;
+	height: 48px;
+	border: 1px solid var(--color-lightgray-10);
+	border-radius: 50%;
+	overflow: hidden;
+	display: block;
+	flex-shrink: 0;
+	text-decoration: none;
+}
+
+.postAuthorAvatar img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+
+.postAuthorInfo {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	flex: 1;
+}
+
+.postAuthorName {
+	font-size: 16px;
+	color: var(--color-gray-10);
+	text-decoration: none;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.postAuthorName:hover {
+	color: var(--color-darkgray-10);
+}
+
+.postAuthorUsername {
+	font-size: 12px;
+	color: var(--color-lightgray-10);
+	text-decoration: none;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.postAuthorUsername:hover {
+	color: var(--color-gray-10);
+}
+
+.postDate {
+	font-size: 12px;
+	color: var(--color-lightgray-10);
+}
+
+.postContent {
+	font-size: 14px;
+	line-height: 1.6;
+	margin-bottom: 10px;
+	color: var(--color-darkgray-10);
+}
+
+.postMediaContainer {
+	margin-top: 10px;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+}
+
+.postMediaItem {
+	width: 100%;
+	aspect-ratio: 1;
+	border-radius: var(--radius-sm);
+	overflow: hidden;
+}
+
+.postMediaImage {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+}
+
+.postMediaImage:hover {
+	opacity: 0.9;
+}
+
+.postMediaVideoContainer {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.postMediaVideo {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: var(--radius-sm);
+}
+
+.postHashtags {
+	margin-top: 10px;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	font-size: 14px;
+}
+
+.postHashtag {
+	color: var(--color-error-10);
+	font-weight: 500;
+}
+
+.loadingContainer {
+	padding: 20px;
+	text-align: center;
+}
+
+.loadingText {
+	color: var(--color-lightgray-10);
+}
+
+.noMorePosts {
+	color: var(--color-lightgray-10);
+	user-select: none;
+}
+
+.emptyState {
+	padding: 20px;
+	text-align: center;
+	color: var(--color-lightgray-10);
+}
+
+/* стили для PreviewCard */
+.previewCardPanel {
+	background-color: var(--color-white-10);
+	border: 1px solid var(--color-lightgray-10);
+	border-radius: var(--radius-sm);
+	padding: 16px;
+	box-shadow: 0 4px 12px var(--color-black-02);
+}
+
+.previewCardContent {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.previewCardAvatar {
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	overflow: hidden;
+	border: 1px solid var(--color-lightgray-10);
+	object-fit: cover;
+}
+
+.previewCardInfo {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.previewCardName {
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+
+.previewCardDisplayName {
+	font-weight: 600;
+	font-size: 16px;
+	color: var(--color-darkgray-10);
+}
+
+.previewCardUsername {
+	font-size: 14px;
+	color: var(--color-lightgray-10);
+}
+
+.previewCardStats {
+	display: flex;
+	gap: 16px;
+}
+
+.previewCardStat {
+	display: flex;
+	gap: 4px;
+	font-size: 14px;
+	align-items: center;
+}
+
+.previewCardStatValue {
+	font-weight: 600;
+	color: var(--color-darkgray-10);
+}
+
+.previewCardStatLabel {
+	color: var(--color-lightgray-10);
+}
+
+/* стили для модального окна медиа */
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--color-black-09);
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.modalCloseButton {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	background: var(--color-white-02);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.2s ease;
+	z-index: 10000;
+}
+
+.modalCloseButton:hover {
+	background: var(--color-white-05);
+}
+
+.modalNavButton {
+	position: fixed;
+	top: 50%;
+	transform: translateY(-50%);
+	background: var(--color-white-02);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.2s ease;
+	z-index: 10000;
+}
+
+.modalNavButton:hover {
+	background: var(--color-white-05);
+}
+
+.modalNavButtonLeft {
+	left: 20px;
+}
+
+.modalNavButtonRight {
+	right: 20px;
+}
+
+.modalImageWrapper {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modalVideo {
+	max-width: 90%;
+	max-height: 90%;
+	outline: none;
+}
+
+.imageZoomContainer {
+	--image-scale: 1.5;
+}
+
+.imageZoomContainer :global(.fullview) {
+	transform: scale(1);
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.fullview img) {
+	transform: scale(1);
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.zoomed) {
+	transform: scale(var(--image-scale, 1.5));
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.zoomed img) {
+	transform: scale(var(--image-scale, 1.5));
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(img) {
+	max-width: 100%;
+	max-height: 90vh;
+	object-fit: contain;
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainerWrapper {
+	width: 90%;
+	max-width: 90vw;
+	height: 90%;
+	max-height: 90vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.hiddenImage {
+	display: none;
 }

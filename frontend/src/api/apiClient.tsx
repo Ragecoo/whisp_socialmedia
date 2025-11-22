@@ -34,5 +34,11 @@ export async function apiClient(path: string, options: RequestInit = {}) {
 		throw new Error(`Ошибка ${result.status}`)
 	}
 
+	// Если статус 204 No Content, возвращаем undefined (нет тела ответа)
+	if (result.status === 204) {
+		return undefined
+	}
+	
+	// Парсим JSON для остальных успешных ответов
 	return result.json()
 }

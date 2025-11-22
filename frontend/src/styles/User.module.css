@@ -83,10 +83,22 @@
 }
 .profilePfpBlock {
 	display: flex;
+	flex-direction: column;
 	background-color: var(--color-light-10);
 	border-radius: var(--radius);
 	padding: calc(3 * var(--block-paddings));
 	border: 1px solid var(--color-darkgray-10);
+	align-items: center;
+	justify-content: center;
+	gap: 16px;
+}
+
+.profileAvatar {
+	width: 200px;
+	height: 200px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid var(--color-lightgray-10);
 }
 .profileInfoBlock {
 	display: flex;
@@ -124,14 +136,7 @@
 			color: var(--color-lightgray-10);
 			height: fit-content;
 			width: fit-content;
-			& div {
-				display: flex;
-				padding: 0.5rem 1.4rem;
-				color: var(--color-white-10);
-				background-color: var(--color-darkgray-10);
-				margin-right: 1rem;
-				border-radius: var(--radius);
-			}
+			gap: 1rem;
 		}
 	}
 	& .profileInfoBottomBlock {
@@ -145,13 +150,391 @@
 			min-height: 100%;
 			padding: var(--block-paddings);
 		}
+		& .profileInfoButton {
+			margin-top: var(--block-paddings);
+			display: flex;
+			justify-content: flex-start;
+		}
 	}
 }
 .profileMainBlock {
 	grid-column: span 2 / span 2;
 	border: 1px solid var(--color-darkgray-10);
 	display: flex;
+	flex-direction: column;
 	background-color: var(--color-light-10);
 	border-radius: var(--radius);
 	padding: var(--block-paddings);
+	overflow-y: auto;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+.postsLoading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 40px;
+}
+
+.userPostsList {
+	display: flex;
+	flex-direction: column;
+	gap: var(--block-gaps);
+	width: 100%;
+	align-items: center;
+}
+
+.userPostCard {
+	background-color: var(--color-white-10);
+	border: 1px solid var(--color-lightgray-10);
+	border-radius: var(--radius-sm);
+	padding: 15px;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	width: var(--inlist-post-width);
+	position: relative;
+}
+
+.userPostHeader {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	z-index: 10;
+}
+
+.userPostMenuButton {
+	background: none;
+	border: none;
+	cursor: pointer;
+	padding: 4px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	color: var(--color-darkgray-10);
+	transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.userPostMenuButton:hover {
+	background-color: var(--color-lightgray-10);
+	color: var(--color-darkgray-05);
+}
+
+.userPostContent {
+	font-size: 14px;
+	line-height: 1.6;
+	color: var(--color-darkgray-10);
+}
+
+.userPostMediaContainer {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 8px;
+}
+
+.userPostMediaItem {
+	width: 100%;
+	aspect-ratio: 1;
+	border-radius: var(--radius-sm);
+	overflow: hidden;
+}
+
+.userPostMediaImage {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	cursor: pointer;
+	transition: opacity 0.2s ease;
+}
+
+.userPostMediaImage:hover {
+	opacity: 0.9;
+}
+
+.userPostMediaVideoContainer {
+	width: 100%;
+	height: 100%;
+	position: relative;
+}
+
+.userPostMediaVideo {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	border-radius: var(--radius-sm);
+}
+
+.userPostHashtags {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+	font-size: 14px;
+}
+
+.userPostHashtag {
+	color: var(--color-error-10);
+	font-weight: 500;
+}
+
+.userPostDate {
+	font-size: 12px;
+	color: var(--color-lightgray-10);
+	margin-top: auto;
+}
+
+.noPosts {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 40px;
+	color: var(--color-lightgray-10);
+	font-size: 16px;
+}
+
+.followButton {
+	padding: 12px 24px;
+	background-color: var(--color-darkgray-10);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: var(--radius-sm);
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+	width: 100%;
+	max-width: 200px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+}
+
+.followButton:hover:not(:disabled) {
+	background-color: var(--color-gray-10);
+}
+
+.followButton:disabled {
+	opacity: 0.6;
+	cursor: not-allowed;
+}
+
+.followCountButton {
+	background-color: var(--color-darkgray-10);
+	color: var(--color-white-10);
+	border: 1px solid var(--color-darkgray-10);
+	transition: background-color 0.2s ease-in-out;
+	padding: 16px 24px;
+	border-radius: var(--radius-sm);
+	font-size: 1rem;
+	font-weight: 600;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+
+.followCountButton:hover {
+	background-color: var(--color-darkgray-09);
+	border: 1px solid var(--color-darkgray-10);
+}
+
+.dialogWrapper {
+	display: flex !important;
+	flex-direction: column !important;
+	max-height: 80vh;
+	width: 90vw;
+	max-width: 500px;
+}
+
+.dialogContent {
+	padding: 16px;
+	overflow-y: auto;
+	flex: 1;
+	min-height: 0;
+	width: 100%;
+	max-height: 60vh;
+}
+
+.dialogLoading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 40px;
+}
+
+.dialogEmpty {
+	text-align: center;
+	padding: 40px;
+	color: var(--color-lightgray-10);
+}
+
+/* стили для модального окна медиа */
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--color-black-09);
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.modalCloseButton {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	background: var(--color-white-02);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.2s ease;
+	z-index: 10000;
+}
+
+.modalCloseButton:hover {
+	background: var(--color-white-05);
+}
+
+.modalNavButton {
+	position: fixed;
+	top: 50%;
+	transform: translateY(-50%);
+	background: var(--color-white-02);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: background-color 0.2s ease;
+	z-index: 10000;
+}
+
+.modalNavButton:hover {
+	background: var(--color-white-05);
+}
+
+.modalNavButtonLeft {
+	left: 20px;
+}
+
+.modalNavButtonRight {
+	right: 20px;
+}
+
+.modalImageWrapper {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modalVideo {
+	max-width: 90%;
+	max-height: 90%;
+	outline: none;
+}
+
+.imageZoomContainer {
+	--image-scale: 1.5;
+}
+
+.imageZoomContainer :global(.fullview) {
+	transform: scale(1);
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.fullview img) {
+	transform: scale(1);
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.zoomed) {
+	transform: scale(var(--image-scale, 1.5));
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.zoomed img) {
+	transform: scale(var(--image-scale, 1.5));
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(img) {
+	max-width: 100%;
+	max-height: 90vh;
+	object-fit: contain;
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainerWrapper {
+	width: 90%;
+	max-width: 90vw;
+	height: 90%;
+	max-height: 90vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}
+
+.hiddenImage {
+	display: none;
+}
+
+.userList {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+}
+
+.userListItem {
+	margin: 0;
+	padding: 0;
+}
+
+.userListLink {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	padding: 12px;
+	border-radius: var(--radius-sm);
+	text-decoration: none;
+	color: var(--color-darkgray-10);
+	transition: background-color 0.2s ease;
+}
+
+.userListLink:hover {
+	background-color: var(--color-light-05);
+}
+
+.userListAvatar {
+	width: 48px;
+	height: 48px;
+	border-radius: 50%;
+	object-fit: cover;
+	border: 1px solid var(--color-lightgray-10);
+}
+
+.userListUsername {
+	font-size: 16px;
+	font-weight: 500;
 }

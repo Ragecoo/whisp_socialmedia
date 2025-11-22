@@ -38,7 +38,7 @@ function Navbar() {
 		<div className={styles.navbar}>
 			<Link href='/'>
 				<div className={styles.navbarLogo}>
-					<img src='https://placehold.co/96x96' />
+					<img src='/logo.png' />
 				</div>
 			</Link>
 			<div className={styles.navbarNavigation}>

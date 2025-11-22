@@ -5,6 +5,9 @@ import io.github.ragecoo.whisp_socialmedia.dto.profiledto.ProfileStatsResponse;
 import io.github.ragecoo.whisp_socialmedia.dto.profiledto.UpdateProfileRequest;
 import io.github.ragecoo.whisp_socialmedia.entity.User;
 
+import io.github.ragecoo.whisp_socialmedia.dto.userdto.UserRef;
+import java.util.List;
+
 public interface ProfileService {
     ProfileResponse getProfile(Long userId, User currentUser);
     ProfileResponse getMyProfile(User currentUser);
@@ -13,4 +16,6 @@ public interface ProfileService {
     void followUser(Long targetUserId, User currentUser);
     void unfollowUser(Long targetUserId, User currentUser);
     boolean isFollowing(Long followerId, Long followingId);
+    List<UserRef> getFollowers(Long userId);
+    List<UserRef> getFollowing(Long userId);
 }

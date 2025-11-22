@@ -75,4 +75,6 @@
 	--color-error-08: rgba(254, 40, 87, 0.8);
 	--color-error-09: rgba(254, 40, 87, 0.9);
 	--color-error-10: rgba(254, 40, 87, 1);
+
+	--inlist-post-width: 600px;
 }

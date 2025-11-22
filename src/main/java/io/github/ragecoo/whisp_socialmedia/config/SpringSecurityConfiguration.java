@@ -63,6 +63,8 @@ public class SpringSecurityConfiguration {
                                 "/api/auth/refresh",
                                 "/api/check"
                         ).permitAll()
+                        .requestMatchers("GET", "/api/posts", "/api/posts/**").permitAll()
+                        .requestMatchers("/uploads/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

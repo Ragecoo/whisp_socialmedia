@@ -1,6 +1,6 @@
 'use client'
 import { Formik } from 'formik'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from '@styles/LoginForm.module.css'
 import { RippleButton, RippleButtonRipples } from './RippleButton'
 import { Cursor, CursorFollow, CursorProvider } from './Cursor'
@@ -12,6 +12,12 @@ interface FormValues {
 }
 
 export default function LoginForm() {
+	const [logError, setLogError] = useState<boolean>(false)
+	useEffect(() => {
+		setTimeout(() => {
+			setLogError(false)
+		}, 5000)
+	}, [logError])
 	return (
 		<>
 			<div className={styles.loginFormTitle}>Войти в аккаунт</div>
@@ -48,8 +54,8 @@ export default function LoginForm() {
 						setTimeout(() => {
 							window.location.reload()
 						}, 500)
-					} catch (err) {
-						console.error('Ошибка при запросе:', err)
+					} catch (err: any) {
+						setLogError(true)
 					} finally {
 						setSubmitting(false)
 					}
@@ -103,7 +109,15 @@ export default function LoginForm() {
 						{errors.password && touched.password && (
 							<div className={styles.loginFormError}>{errors.password}</div>
 						)}
+
+						{logError && (
+							<div className={styles.loginFormError}>
+								<br />
+								Такого аккаунта не существует
+							</div>
+						)}
 						<br />
+
 						<RippleButton
 							type='submit'
 							disabled={isSubmitting}

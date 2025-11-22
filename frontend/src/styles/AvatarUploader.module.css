@@ -61,8 +61,8 @@
 }
 
 .uploading {
-	background-color: rgba(0, 0, 0, 0.5);
-	color: white;
+	background-color: var(--color-black-05);
+	color: var(--color-white-10);
 	font-size: 0.875rem;
 }
 

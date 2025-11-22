@@ -12,21 +12,21 @@ import java.util.Optional;
 
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    // Найти конкретную подписку по ID подписчика и ID того, на кого подписываются
+    // найти конкретную подписку по id подписчика и id того на кого подписываются
     @Query("SELECT f FROM Follow f WHERE f.follower.id = :followerId AND f.following.id = :followingId")
     Optional<Follow> findByFollowerIdAndFollowingId(@Param("followerId") Long followerId,
                                                     @Param("followingId") Long followingId);
-    // Проверить существование подписки
+    // проверить существование подписки
     @Query("SELECT CASE WHEN COUNT(f) > 0 THEN true ELSE false END FROM Follow f WHERE f.follower.id = :followerId AND f.following.id = :followingId")
     boolean existsByFollowerIdAndFollowingId(@Param("followerId") Long followerId,
                                              @Param("followingId") Long followingId);
-    // Найти все подписки пользователя (на кого он подписан)
+    // найти все подписки пользователя на кого он подписан
     @Query("SELECT f FROM Follow f WHERE f.follower.id = :followerId")
     List<Follow> findByFollowerId(@Param("followerId") Long followerId);
-    // Найти всех подписчиков пользователя
+    // найти всех подписчиков пользователя
     @Query("SELECT f FROM Follow f WHERE f.following.id = :followingId")
     List<Follow> findByFollowingId(@Param("followingId") Long followingId);
-    // Посчитать количество подписчиков
+    // посчитать количество подписчиков
     @Query("SELECT COUNT(f) FROM Follow f WHERE f.following.id = :userId")
     Long countFollowers(@Param("userId") Long userId);
     @Query("SELECT COUNT(f) FROM Follow f WHERE f.follower.id = :userId")
@@ -38,4 +38,11 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     default boolean isFollowing(Long followerId, Long followingId) {
         return existsByFollowerIdAndFollowingId(followerId, followingId);
     }
+    
+    // проверить взаимную подписку оба подписаны друг на друга
+    @Query("SELECT CASE WHEN " +
+           "(EXISTS (SELECT 1 FROM Follow f1 WHERE f1.follower.id = :userId1 AND f1.following.id = :userId2) " +
+           "AND EXISTS (SELECT 1 FROM Follow f2 WHERE f2.follower.id = :userId2 AND f2.following.id = :userId1)) " +
+           "THEN true ELSE false END")
+    boolean areMutualFriends(@Param("userId1") Long userId1, @Param("userId2") Long userId2);
 }

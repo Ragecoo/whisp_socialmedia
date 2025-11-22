@@ -38,9 +38,44 @@ public class FileUploadController {
             Path filePath = uploadPath.resolve(fileName);
             Files.copy(file.getInputStream(), filePath);
 
-            // Возвращаем URL для доступа к файлу
+            // вернуть url для доступа к файлу
             String fileUrl = "/uploads/" + fileName;
             return ResponseEntity.ok().body(Map.of("url", fileUrl));
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body("Could not upload file: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/media")
+    public ResponseEntity<?> uploadMedia(@RequestParam("file") MultipartFile file) {
+        try {
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+
+            String originalFileName = file.getOriginalFilename();
+            String contentType = file.getContentType();
+            
+            // проверить что это изображение или видео
+            if (contentType == null || (!contentType.startsWith("image/") && !contentType.startsWith("video/"))) {
+                return ResponseEntity.status(400).body("Only images and videos are allowed");
+            }
+
+            String fileExtension = originalFileName != null ?
+                    originalFileName.substring(originalFileName.lastIndexOf(".")) : 
+                    (contentType.startsWith("image/") ? ".jpg" : ".mp4");
+            String fileName = "media_" + UUID.randomUUID().toString() + fileExtension;
+
+            Path filePath = uploadPath.resolve(fileName);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // вернуть url и тип файла
+            String fileUrl = "/uploads/" + fileName;
+            return ResponseEntity.ok().body(Map.of(
+                    "url", fileUrl,
+                    "type", contentType.startsWith("image/") ? "image" : "video"
+            ));
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Could not upload file: " + e.getMessage());
         }

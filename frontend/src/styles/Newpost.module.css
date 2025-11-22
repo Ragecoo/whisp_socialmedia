@@ -1,0 +1,588 @@
+.newpostPage {
+	display: flex;
+	flex-direction: row;
+
+	width: calc(100vw - var(--navbar-width));
+	padding: var(--block-gaps);
+	gap: var(--block-gaps);
+	--newpostSection-width: 1024px;
+	--form-width: 512px;
+	--form-padding: var(--block-paddings);
+	--page-blocks-bg: var(--color-white-10);
+	display: flex;
+	justify-content: center;
+}
+.newpostSection {
+	width: var(--newpostSection-width);
+	height: 100%;
+	background-color: var(--page-blocks-bg);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid var(--color-darkgray-10);
+	border-radius: var(--radius);
+	overflow: hidden;
+	position: relative;
+}
+.newpostSectionLoading {
+	width: 100%;
+	height: 100%;
+	background-color: var(--page-blocks-bg);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: var(--radius);
+}
+.newpostBackground {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+}
+
+.newpostContainer {
+	width: var(--form-width);
+	height: auto;
+	min-height: 300px;
+	background-color: var(--color-white-10);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	border-radius: var(--radius);
+}
+
+/* стили для react-tag-input */
+.reactTagsTags {
+	position: relative;
+	padding: 12px;
+	border: 1px solid var(--color-lightgray-10);
+	border-radius: var(--radius-lg);
+	background-color: var(--color-white-10);
+	min-height: 50px;
+}
+
+.reactTagsTagInput {
+	display: inline-block;
+	margin: 4px;
+	flex: 1;
+}
+
+.reactTagsTagInputField {
+	border: none;
+	outline: none;
+	font-size: 14px;
+	padding: 4px 8px;
+	min-width: 150px;
+	width: 100%;
+}
+
+.reactTagsSelected {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 8px;
+}
+
+.reactTagsTag {
+	display: inline-flex;
+	align-items: center;
+	background-color: var(--color-light-10);
+	border: 1px solid var(--color-lightgray-10);
+	border-radius: var(--radius-sm);
+	font-size: 14px;
+	padding: 4px 12px;
+	cursor: grab;
+	position: relative;
+	padding-left: 24px;
+}
+
+.reactTagsTag::before {
+	content: '#';
+	position: absolute;
+	left: 8px;
+	color: var(--color-gray-10);
+	opacity: 0.5;
+	font-size: 14px;
+	font-weight: 500;
+}
+
+.reactTagsRemove {
+	background: none;
+	border: none;
+	cursor: pointer;
+	margin-left: 8px;
+	font-size: 0;
+	padding: 0;
+	width: 16px;
+	height: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: relative;
+}
+
+.reactTagsRemove::before {
+	content: '';
+	position: absolute;
+	width: 16px;
+	height: 16px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E");
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+}
+
+.reactTagsRemove:hover::before {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E");
+}
+
+.reactTagsSuggestions {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	right: 0;
+	background: white;
+	border: 1px solid var(--color-lightgray-10);
+	border-top: none;
+	border-radius: 0 0 8px 8px;
+	max-height: 200px;
+	overflow-y: auto;
+	z-index: 10;
+}
+
+.reactTagsActiveSuggestion {
+	background-color: var(--color-light-10);
+}
+
+/* стили для draggable медиа элементов */
+.mediaItem {
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.mediaItem:hover {
+	transform: scale(1.02);
+	box-shadow: 0 4px 8px var(--color-black-02);
+}
+
+.mediaItemDragging {
+	opacity: 0.5;
+	cursor: grabbing;
+}
+
+.imageZoomContainer {
+	--image-scale: 1.5;
+}
+
+.imageZoomContainer :global(.fullview) {
+	transform: scale(1);
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.fullview img) {
+	transform: scale(1);
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.zoomed) {
+	transform: scale(var(--image-scale, 1.5));
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(.zoomed img) {
+	transform: scale(var(--image-scale, 1.5));
+	transition: transform 0.4s ease-in-out;
+}
+
+.imageZoomContainer :global(img) {
+	max-width: 100%;
+	max-height: 90vh;
+	object-fit: contain;
+	transition: transform 0.4s ease-in-out;
+}
+
+.mediaItemContainer {
+	position: relative;
+	border-radius: 8px;
+	overflow: hidden;
+	border: 1px solid var(--color-lightgray-10);
+	user-select: none;
+}
+
+.mediaItemContainerDragging {
+	cursor: grabbing;
+}
+
+.mediaItemContainerNotDragging {
+	cursor: grab;
+}
+
+.mediaImage {
+	width: 100%;
+	height: 150px;
+	object-fit: cover;
+	user-select: none;
+	-webkit-user-drag: none;
+}
+
+.mediaImageClickable {
+	cursor: pointer;
+}
+
+.mediaImageDefault {
+	cursor: default;
+}
+
+.mediaVideoContainer {
+	position: relative;
+	width: 100%;
+	height: 150px;
+}
+
+.mediaVideoPreview {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	user-select: none;
+	-webkit-user-drag: none;
+}
+
+.mediaVideoPlaceholder {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: var(--color-light-10);
+}
+
+.mediaPlayButton {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	background: var(--color-black-07);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: 50%;
+	width: 48px;
+	height: 48px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 5;
+	transition: background 0.2s;
+}
+
+.mediaPlayButton:hover {
+	background: var(--color-black-09);
+}
+
+.mediaRemoveButton {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	background: var(--color-black-06);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: 50%;
+	width: 24px;
+	height: 24px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+}
+
+/* модальное окно */
+.modal {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: var(--color-black-09);
+	z-index: 9999;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	overflow: auto;
+}
+
+.modalCloseButton {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	background: var(--color-white-02);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: 50%;
+	width: 40px;
+	height: 40px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10000;
+}
+
+.modalNavButton {
+	position: fixed;
+	top: 50%;
+	transform: translateY(-50%);
+	background: var(--color-white-02);
+	color: var(--color-white-10);
+	border: none;
+	border-radius: 50%;
+	width: 50px;
+	height: 50px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10000;
+}
+
+.modalNavButtonLeft {
+	left: 20px;
+}
+
+.modalNavButtonRight {
+	right: 20px;
+}
+
+.modalImageWrapper {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.modalVideo {
+	max-width: 90%;
+	max-height: 90%;
+	outline: none;
+}
+
+/* форма */
+.formPadding {
+	padding: 20px;
+}
+
+.formTitle {
+	margin-bottom: 20px;
+	font-size: 24px;
+	font-weight: 600;
+	color: var(--color-black-10);
+	text-align: center;
+}
+
+.formField {
+	margin-bottom: 20px;
+}
+
+.formLabel {
+	display: block;
+	margin-bottom: 8px;
+}
+
+.formTextarea {
+	width: 100%;
+	min-height: 120px;
+	padding: 12px;
+	border-radius: 8px;
+	border: 1px solid var(--color-lightgray-10);
+	font-size: 14px;
+	resize: none;
+}
+
+.formError {
+	color: var(--color-error-10);
+	font-size: 12px;
+	margin-top: 4px;
+}
+
+.formErrorWithMargin {
+	color: var(--color-error-10);
+	font-size: 12px;
+	margin-top: 4px;
+	margin-bottom: 10px;
+}
+
+/* кастомный combobox */
+.comboboxWrapper {
+	position: relative;
+	width: 100%;
+}
+
+.comboboxButton {
+	width: 100%;
+	padding: 16px;
+	border-radius: var(--radius-sm);
+	border: 1px solid var(--color-lightgray-10);
+	font-size: 14px;
+	background-color: var(--color-white-10);
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	text-align: left;
+}
+
+.comboboxButton:hover {
+	border-color: var(--color-lightgray-10);
+}
+
+.comboboxButton:focus {
+	border-color: var(--color-gray-10);
+}
+
+.comboboxIcon {
+	transition: transform 0.2s ease;
+	flex-shrink: 0;
+	color: var(--color-gray-10);
+}
+
+.comboboxOpen .comboboxIcon {
+	transform: rotate(180deg);
+}
+
+.comboboxDropdown {
+	position: absolute;
+	top: calc(100% + 4px);
+	left: 0;
+	right: 0;
+	background-color: var(--color-white-10);
+	border: 1px solid var(--color-lightgray-10);
+	border-radius: var(--radius-sm);
+	box-shadow: 0 4px 12px var(--color-black-02);
+	opacity: 0;
+	visibility: hidden;
+	transform: translateY(-8px);
+	transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+	z-index: 100;
+	overflow: hidden;
+}
+
+.comboboxOpen .comboboxDropdown {
+	opacity: 1;
+	visibility: visible;
+	transform: translateY(0);
+}
+
+.comboboxOption {
+	width: 100%;
+	padding: 16px;
+	border: none;
+	background: none;
+	cursor: pointer;
+	font-size: 14px;
+	text-align: left;
+	transition: background-color 0.15s ease;
+	color: var(--color-darkgray-10);
+}
+
+.comboboxOption:hover {
+	background-color: var(--color-light-10);
+}
+
+.comboboxOptionActive {
+	background-color: var(--color-light-10);
+	color: var(--color-darkgray-10);
+	font-weight: 400;
+}
+
+.formSubmitButton {
+	width: 100%;
+	font-size: 16px;
+	background-color: var(--color-darkgray-10);
+	color: var(--color-white-10);
+	border: 1px solid var(--color-darkgray-10);
+	transition: background-color 0.2s ease-in-out;
+	&:hover {
+		background-color: var(--color-darkgray-09);
+		border: 1px solid var(--color-darkgray-10);
+	}
+	padding: 16px 24px;
+	border-radius: var(--radius-sm);
+}
+
+/* медиа грид */
+.mediaGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 10px;
+}
+
+.mediaGridWithMargin {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+	gap: 10px;
+	margin-top: 10px;
+}
+
+.mediaUploadArea {
+	border: 2px dashed var(--color-lightgray-10);
+	border-radius: 8px;
+	height: 150px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+	position: relative;
+}
+
+.mediaUploadAreaDisabled {
+	cursor: wait;
+	opacity: 0.6;
+}
+
+.mediaUploadAreaEnabled {
+	cursor: pointer;
+	opacity: 1;
+}
+
+.mediaUploadAreaEmpty {
+	border: 2px dashed var(--color-lightgray-10);
+	border-radius: 8px;
+	padding: 20px;
+	text-align: center;
+	cursor: pointer;
+	opacity: 1;
+	position: relative;
+	z-index: 1;
+}
+
+.mediaUploadAreaEmptyDisabled {
+	cursor: wait;
+	opacity: 0.6;
+}
+
+.mediaUploadAreaEmptyEnabled {
+	cursor: pointer;
+	opacity: 1;
+}
+
+.hiddenInput {
+	display: none;
+}
+
+.hiddenImage {
+	display: none;
+}
+
+.imageZoomContainerWrapper {
+	width: 90%;
+	max-width: 90vw;
+	height: 90%;
+	max-height: 90vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 20px;
+}

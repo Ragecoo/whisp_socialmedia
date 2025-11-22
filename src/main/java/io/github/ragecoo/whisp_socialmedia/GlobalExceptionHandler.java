@@ -75,7 +75,31 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoResourceFoundException.class)
     public ResponseEntity<Resource> handleNoResourceFound(NoResourceFoundException ex) {
         try {
-            // путь к дефолтной картинке
+            String requestPath = ex.getResourcePath();
+            
+            // Если это запрос к медиафайлу (начинается с media_), возвращаем media_not_found.png
+            // Медиафайлы имеют префикс "media_", аватары - "avatar_"
+            if (requestPath != null && requestPath.startsWith("/uploads/") && 
+                requestPath.contains("/media_") && !requestPath.contains("media_not_found")) {
+                // Проверяем, есть ли media_not_found.png
+                Path mediaNotFoundPath = Paths.get("uploads/media_not_found.png");
+                try {
+                    Resource mediaNotFoundResource = new UrlResource(mediaNotFoundPath.toUri());
+                    
+                    if (mediaNotFoundResource.exists() && mediaNotFoundResource.isReadable()) {
+                        return ResponseEntity.ok()
+                                .header(HttpHeaders.CONTENT_TYPE, "image/png")
+                                .body(mediaNotFoundResource);
+                    } else {
+                        // Если media_not_found.png нет, возвращаем 404
+                        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                    }
+                } catch (MalformedURLException e) {
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                }
+            }
+            
+            // Для аватарок возвращаем standart_avatar.png
             Path fallbackPath = Paths.get("uploads/standart_avatar.png");
             Resource resource = new UrlResource(fallbackPath.toUri());
 

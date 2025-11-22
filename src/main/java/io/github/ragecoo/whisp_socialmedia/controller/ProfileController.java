@@ -3,6 +3,7 @@ package io.github.ragecoo.whisp_socialmedia.controller;
 import io.github.ragecoo.whisp_socialmedia.dto.profiledto.ProfileResponse;
 import io.github.ragecoo.whisp_socialmedia.dto.profiledto.ProfileStatsResponse;
 import io.github.ragecoo.whisp_socialmedia.dto.profiledto.UpdateProfileRequest;
+import io.github.ragecoo.whisp_socialmedia.dto.userdto.UserRef;
 import io.github.ragecoo.whisp_socialmedia.entity.User;
 import io.github.ragecoo.whisp_socialmedia.service.AuthService;
 import io.github.ragecoo.whisp_socialmedia.service.ProfileService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -84,5 +86,17 @@ public class ProfileController {
         User currentUser = authService.getUserByToken(accessToken);
         boolean isFollowing = profileService.isFollowing(currentUser.getId(), userId);
         return ResponseEntity.ok(Map.of("isFollowing", isFollowing));
+    }
+
+    @GetMapping("/{userId}/followers")
+    public ResponseEntity<List<UserRef>> getFollowers(@PathVariable Long userId) {
+        List<UserRef> followers = profileService.getFollowers(userId);
+        return ResponseEntity.ok(followers);
+    }
+
+    @GetMapping("/{userId}/following")
+    public ResponseEntity<List<UserRef>> getFollowing(@PathVariable Long userId) {
+        List<UserRef> following = profileService.getFollowing(userId);
+        return ResponseEntity.ok(following);
     }
 }
